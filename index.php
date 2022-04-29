@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>Servidor Demo - Warren Tech Academy</title>
+    <title>Servidor de Testes - Warren Tech Academy</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
@@ -56,32 +56,34 @@
         exit();
     endif;
 
-    $conteudo .= "Data: " . date("d/m/Y H:i:s") . "\n";
-    $conteudo .= "Nome: " . $_REQUEST['nome'] . "\n";
-    $conteudo .= "Email: " . $_REQUEST['email'] . "\n";
-    $conteudo .= "Mensagem: " . $_REQUEST['mensagem'] . "\n";
-    $conteudo .= "----------------------------\n";
+
+    // Montando o conteúdo
+    $content .= "Data: " . date("d/m/Y H:i:s") . "\n";
+    $content .= "Nome: " . $_REQUEST['nome'] . "\n";
+    $content .= "Email: " . $_REQUEST['email'] . "\n";
+    $content .= "Mensagem: " . $_REQUEST['mensagem'] . "\n";
+    $content .= "----------------------------\n";
 
     // Primeiro vamos ter certeza de que o arquivo existe e pode ser alterado
     if (is_writable($filename)) {
 
         // Em nosso exemplo, nós vamos abrir o arquivo $filename
         // em modo de adição. O ponteiro do arquivo estará no final
-        // do arquivo, e é pra lá que $conteudo irá quando o 
+        // do arquivo, e é pra lá que $content irá quando o 
         // escrevermos com fwrite().
         if (!$handle = fopen($filename, 'a')) {
             echo "Não foi possível abrir o arquivo ($filename)";
             exit;
         }
 
-        // Escreve $conteudo no nosso arquivo aberto.
-        if (fwrite($handle, $conteudo) === FALSE) {
+        // Escreve $content no nosso arquivo aberto.
+        if (fwrite($handle, $content) === FALSE) {
             echo "Não foi possível escrever no arquivo ($filename)";
             exit;
         }
 
         echo "Sucesso: '" . $_REQUEST['nome'] . "' enviou informações em " . date("d/m/Y H:i:s") . "<br>Aguarde, Processando...  ";
-        echo '<meta http-equiv="refresh" content="5;url=?informacoes=1">';
+        echo '<meta http-equiv="refresh" content="5;url=?informacoes=1">'; //redirect
         
         fclose($handle);
         
