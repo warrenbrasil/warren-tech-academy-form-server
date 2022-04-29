@@ -11,8 +11,6 @@ Vamos adotar:
 
 */ 
 
-$filename = 'data.txt';
-
 if(!isset($_REQUEST['nome']) && !empty($_REQUEST['nome'])):
     echo 'ERROR. Atenção: Você precisa enviar o nome. Utilize a tag <input type="text" name="nome"> para fazer isso e tenha certeza que não enviou vazio.';
     exit();
@@ -28,12 +26,13 @@ if(!isset($_REQUEST['mensagem']) && !empty($_REQUEST['mensagem'])):
     exit();
 endif;
 
-
-$conteudo .= "-------------------------:\n";
 $conteudo .= "Nome: ".$_REQUEST['nome']."\n";
 $conteudo .= "Email: ".$_REQUEST['email']."\n";
 $conteudo .= "Mensagem: ".$_REQUEST['mensagem']."\n";
-$conteudo .= "Datetime: ".date("DD/MM/YYYY H:i:s")."\n";
+$conteudo .= "Data: ".date("d/m/Y H:i:s")."\n";
+$conteudo .= "-------------------------:\n";
+
+$filename = 'data.txt';
 
 // Primeiro vamos ter certeza de que o arquivo existe e pode ser alterado
 if (is_writable($filename)) {
@@ -53,12 +52,10 @@ if (is_writable($filename)) {
         exit;
     }
 
-    echo "Sucesso: ".$_REQUEST['nome']." enviou informações para ($filename)";
+    echo "Sucesso: '".$_REQUEST['nome']."' enviou informações em ".date("d/m/Y H:i:s");
 
     fclose($handle);
 
 } else {
-    echo "O arquivo $filename não pode ser alterado";
+    echo "Erro: O arquivo $filename não pode ser alterado";
 }
-
-?>
