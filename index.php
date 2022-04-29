@@ -1,61 +1,93 @@
-<?php
+<html>
 
-/* 
-O objetivo desse servidor é apenas exibir o retorno de um formulário HTML 
-simples para demostração nas aulas de Formulários HTML 
+<head>
+    <title>Servidor Demo - Warren Tech Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.5em;
+            padding: 3%;
+        }
+    </style>
+</head>
 
-Vamos adotar: 
-- Nome
-- Email
-- Mensagem
+<body>
+    <?php
 
-*/ 
+    /* 
+        O objetivo desse servidor é apenas exibir o retorno de um formulário HTML 
+        simples para demostração nas aulas de Formulários HTML 
 
-if(!isset($_REQUEST['nome']) && !empty($_REQUEST['nome'])):
-    echo 'ERROR. Atenção: Você precisa enviar o nome. Utilize a tag <input type="text" name="nome"> para fazer isso e tenha certeza que não enviou vazio.';
-    exit();
-endif;
+        Para inserir informações envie via GET ou POST: 
+        - nome
+        - email
+        - mensagem
 
-if(!isset($_REQUEST['email']) && !empty($_REQUEST['email'])):
-    echo 'ERROR. Atenção: Você precisa enviar o email. Utilize a tag <input type="text" name="email"> para fazer isso e tenha certeza que não enviou vazio.';
-    exit();
-endif;
+        Para exibir as informações armazenadas envie 'informacoes' via GET
 
-if(!isset($_REQUEST['mensagem']) && !empty($_REQUEST['mensagem'])):
-    echo 'ERROR. Atenção: Você precisa enviar a mensagem. Utilize a tag <textarea name="mensagem"> ... </textarea> para fazer isso e tenha certeza que não enviou vazio.';
-    exit();
-endif;
+    */
 
-$conteudo .= "Nome: ".$_REQUEST['nome']."\n";
-$conteudo .= "Email: ".$_REQUEST['email']."\n";
-$conteudo .= "Mensagem: ".$_REQUEST['mensagem']."\n";
-$conteudo .= "Data: ".date("d/m/Y H:i:s")."\n";
-$conteudo .= "-------------------------:\n";
+    $filename = 'data.txt'; //database
 
-$filename = 'data.txt';
+    if (isset($_REQUEST['informacoes'])) :
+        echo "Informações Recebidas:";
+        $data = file_get_contents($filename);
+        echo "<pre>" . $data . "<pre>";
+        exit();
+    endif;
 
-// Primeiro vamos ter certeza de que o arquivo existe e pode ser alterado
-if (is_writable($filename)) {
+    if (!isset($_REQUEST['nome']) || empty($_REQUEST['nome'])) :
+        echo 'Error 400 Bad Request<br> Atenção: Você precisa enviar o nome. <br>Utilize a tag &lt;input type="text" name="nome"&gt; para isso e tenha certeza que não enviou vazio.';
+        exit();
+    endif;
 
- // Em nosso exemplo, nós vamos abrir o arquivo $filename
- // em modo de adição. O ponteiro do arquivo estará no final
- // do arquivo, e é pra lá que $conteudo irá quando o 
- // escrevermos com fwrite().
-    if (!$handle = fopen($filename, 'a')) {
-         echo "Não foi possível abrir o arquivo ($filename)";
-         exit;
+    if (!isset($_REQUEST['email']) || empty($_REQUEST['email'])) :
+        echo 'Error 400 Bad Request<br> Atenção: Você precisa enviar o email.<br> Utilize a tag &lt;input type="text" name="email"&gt; para isso e tenha certeza que não enviou vazio.';
+        exit();
+    endif;
+
+    if (!isset($_REQUEST['mensagem']) || empty($_REQUEST['mensagem'])) :
+        echo 'Error 400 Bad Request<br> Atenção: Você precisa enviar a mensagem.<br> Utilize a tag &lt;textarea name="mensagem"&gt; ... &lt;/textarea&gt; para isso e tenha certeza que não enviou vazio.';
+        exit();
+    endif;
+
+    $conteudo .= "Data: " . date("d/m/Y H:i:s") . "\n";
+    $conteudo .= "Nome: " . $_REQUEST['nome'] . "\n";
+    $conteudo .= "Email: " . $_REQUEST['email'] . "\n";
+    $conteudo .= "Mensagem: " . $_REQUEST['mensagem'] . "\n";
+    $conteudo .= "----------------------------\n";
+
+    // Primeiro vamos ter certeza de que o arquivo existe e pode ser alterado
+    if (is_writable($filename)) {
+
+        // Em nosso exemplo, nós vamos abrir o arquivo $filename
+        // em modo de adição. O ponteiro do arquivo estará no final
+        // do arquivo, e é pra lá que $conteudo irá quando o 
+        // escrevermos com fwrite().
+        if (!$handle = fopen($filename, 'a')) {
+            echo "Não foi possível abrir o arquivo ($filename)";
+            exit;
+        }
+
+        // Escreve $conteudo no nosso arquivo aberto.
+        if (fwrite($handle, $conteudo) === FALSE) {
+            echo "Não foi possível escrever no arquivo ($filename)";
+            exit;
+        }
+
+        echo "Sucesso: '" . $_REQUEST['nome'] . "' enviou informações em " . date("d/m/Y H:i:s") . "<br>Aguarde, Processando...  ";
+        echo '<meta http-equiv="refresh" content="5;url=?informacoes=1">';
+        
+        fclose($handle);
+        
+        exit();
+    } else {
+        echo "Erro: O arquivo $filename não pode ser alterado";
     }
+    ?>
+</body>
 
-    // Escreve $conteudo no nosso arquivo aberto.
-    if (fwrite($handle, $conteudo) === FALSE) {
-        echo "Não foi possível escrever no arquivo ($filename)";
-        exit;
-    }
-
-    echo "Sucesso: '".$_REQUEST['nome']."' enviou informações em ".date("d/m/Y H:i:s");
-
-    fclose($handle);
-
-} else {
-    echo "Erro: O arquivo $filename não pode ser alterado";
-}
+</html>
