@@ -30,12 +30,26 @@
 
         Para exibir as informações armazenadas envie 'informacoes' via GET
 
+        Para remover todas as informações envie 'delete' via GET
+
     */
 
     $filename = 'data.txt'; //database
 
     if (isset($_REQUEST['informacoes'])) :
         echo "Informações Recebidas:";
+        $data = file_get_contents($filename);
+        echo "<pre>" . $data . "<pre>";
+        exit();
+    endif;
+
+    if (isset($_REQUEST['delete'])) :
+
+        unlink($filename);
+        fopen($filename,'w+');
+
+        echo "Informações Removidas";
+        
         $data = file_get_contents($filename);
         echo "<pre>" . $data . "<pre>";
         exit();
