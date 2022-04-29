@@ -18,8 +18,10 @@
     <?php
 
     /* 
-        O objetivo desse servidor é apenas exibir o retorno de um formulário HTML 
-        simples para demostração nas aulas de Formulários HTML 
+        O objetivo desse servidor é apenas exibir o retorno de um formulário 
+        simples para demostração nas aulas de HTML.
+
+        Para dar a ideia do servidor recebendo e armazenando as informações, mantive os dados enviados no arquivo data.txt.
 
         Para inserir informações envie via GET ou POST: 
         - nome
